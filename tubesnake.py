@@ -55,7 +55,7 @@ class GUI:
 	def throw_error(self, error):
 		error_msg = f"""
 		Errors have occured! Please examine the following Error output: {error}
-		Please re-run TubeSnake with properly provided arguments, if you encounter this Error again, please report it on our GitHub @ github.com
+		Please re-run TubeSnake with properly provided arguments, if you encounter this Error again, please report it on our GitHub @ github.com/YourKeeper/TubeSnake
 		"""
 		self.status_label.configure(text="Error!")
 		tkinter.messagebox.showerror(title="An Error Occured!", message=error_msg)
