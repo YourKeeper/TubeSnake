@@ -50,7 +50,7 @@ class GUI:
 		self.download_mp4_button.grid(row=0, column=0, sticky=tkinter.W+tkinter.E)
 		self.download_playlist_mp4_button.grid(row=0, column=1, sticky=tkinter.W+tkinter.E)
 		self.download_mp3_button.grid(row=1, column=0, sticky=tkinter.W+tkinter.E)
-		self.download_playlist_mp3_button.grid(row=1, co		self.toggle_frame = tkinter.Frame(self.window)lumn=1, sticky=tkinter.W+tkinter.E)
+		self.download_playlist_mp3_button.grid(row=1, column=1. sticky=tkinter.W+tkinter.E)
 		self.button_frame.pack()
 		self.close_button.pack()
 		self.window.mainloop()
@@ -69,7 +69,7 @@ class GUI:
 		video_ID = self.entry.get()
 		link = f"https://www.youtube.com/watch?v={video_ID}"
 		self.throw_warning()
-		self.status_label.configure(text="Downloading, p		self.toggle_frame = tkinter.Frame(self.window)lease wait...")
+		self.status_label.configure(text="Downloading, please wait...")
 		save_loc = tkinter.filedialog.askdirectory()
 
 		try:
