@@ -16,7 +16,7 @@ class GUI:
 	def __init__(self):
 		# Creating Window object
 		self.window = tkinter.Tk()
-		self.window.geometry("375x375")
+		self.window.geometry("375x400")
 		self.window.title("TubeSnake - YouTube Downloader")
 		self.icon = tkinter.PhotoImage(file = 'favicon.png')
 		self.window.iconphoto(False, self.icon)
@@ -27,6 +27,18 @@ class GUI:
 		self.TSlabel = tkinter.Label(self.window, text="Enter the Video or Playlist ID")
 		self.entry = tkinter.Entry(self.window, fg="black", bg="white", width=25)
 		self.status_label = tkinter.Label(self.window, text=" ")
+
+		# Checkbuttons for Video/Audio Quality
+		self.toggle_frame = tkinter.Frame(self.window)
+		self.toggle_frame.columnconfigure(0, weight=1)
+		self.toggle_frame.columnconfigure(1, weight=1)
+		self.toggle_frame.columnconfigure(2, weight=1)
+		self.toggle_frame.columnconfigure(3, weight=1)
+		self.select_quality = tkinter.IntVar()
+		self.check_360p = tkinter.Radiobutton(self.toggle_frame, text="360p", variable=self.select_quality, width=5, height=1, value=1)
+		self.check_480p = tkinter.Radiobutton(self.toggle_frame, text="480p", variable=self.select_quality, width=5, height=1, value=2)
+		self.check_720p = tkinter.Radiobutton(self.toggle_frame, text="720p", variable=self.select_quality, width=5, height=1, value=3)
+		self.check_1080p = tkinter.Radiobutton(self.toggle_frame, text="1080p", variable=self.select_quality, width=5, height=1, value=4)
 
 		# Buttons and shit
 		self.button_frame = tkinter.Frame(self.window)
@@ -44,6 +56,11 @@ class GUI:
 		self.TSlabel.pack()
 		self.entry.pack(padx=5, pady=5)
 		self.status_label.pack()
+		self.check_360p.grid(row=0, column=0, sticky=tkinter.W+tkinter.E)
+		self.check_480p.grid(row=0, column=1, sticky=tkinter.W+tkinter.E)
+		self.check_720p.grid(row=0, column=2, sticky=tkinter.W+tkinter.E)
+		self.check_1080p.grid(row=0, column=3, sticky=tkinter.W+tkinter.E)
+		self.toggle_frame.pack()
 		self.download_mp4_button.grid(row=0, column=0, sticky=tkinter.W+tkinter.E)
 		self.download_playlist_mp4_button.grid(row=0, column=1, sticky=tkinter.W+tkinter.E)
 		self.download_mp3_button.grid(row=1, column=0, sticky=tkinter.W+tkinter.E)
@@ -62,6 +79,19 @@ class GUI:
 		warning_msg = "TubeSnake will report it's Not Responding when performing a download task, PLEASE do not close TubeSnake during this process and be patient, we promise your files are downloading! :)"
 		tkinter.messagebox.showwarning(title="Warning!", message=warning_msg)
 
+	def quality_check(self):
+		quality = ""
+		match self.select_quality:
+			case 1:
+				quality = "360p"
+			case 2:
+				quality = "480p"
+			case 3:
+				quality = "720p"
+			case 4:
+				quality = "1080p"
+		return quality
+
 	def download_mp4(self):
 		video_ID = self.entry.get()
 		link = f"https://www.youtube.com/watch?v={video_ID}"
@@ -71,7 +101,7 @@ class GUI:
 
 		try:
 			video = pytube.YouTube(link)
-			video.streams.filter(file_extension="mp4")
+			video.streams.filter(file_extension="mp4", res=self.quality_check())
 			video.streams.get_highest_resolution().download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Video downloaded and saved to {save_loc}!")
@@ -88,6 +118,7 @@ class GUI:
 		try:
 			playlist = pytube.Playlist(link)
 			for video in playlist.videos:
+				video.streams.filter(file_extension="mp4", res=self.quality_check())
 				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Playlist's contents were downloaded and saved to {save_loc}!")
@@ -103,7 +134,7 @@ class GUI:
 
 		try:
 			video = pytube.YouTube(link)
-			video.streams.filter(only_audio=True)
+			video.streams.filter(only_audio=True, res=self.quality_check())
 			vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
 			basefile, ext = os.path.splitext(vidfile)
 			newname = basefile + '.mp3'
@@ -124,7 +155,7 @@ class GUI:
 			playlist = pytube.Playlist(link)
 			for video in playlist.videos:
 				video = pytube.YouTube(link)
-				video.streams.filter(only_audio=True)
+				video.streams.filter(only_audio=True, res=self.quality_check())
 				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
 				basefile, ext = os.path.splitext(vidfile)
 				newname = basefile + '.mp3'
