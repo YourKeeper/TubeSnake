@@ -154,7 +154,6 @@ class GUI:
 		try:
 			playlist = pytube.Playlist(link)
 			for video in playlist.videos:
-				video = pytube.YouTube(link)
 				video.streams.filter(only_audio=True, res=self.quality_check())
 				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
 				basefile, ext = os.path.splitext(vidfile)
