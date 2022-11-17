@@ -50,7 +50,7 @@ class GUI:
 		self.download_mp4_button.grid(row=0, column=0, sticky=tkinter.W+tkinter.E)
 		self.download_playlist_mp4_button.grid(row=0, column=1, sticky=tkinter.W+tkinter.E)
 		self.download_mp3_button.grid(row=1, column=0, sticky=tkinter.W+tkinter.E)
-		self.download_playlist_mp3_button.grid(row=1, column=1. sticky=tkinter.W+tkinter.E)
+		self.download_playlist_mp3_button.grid(row=1, column=1, sticky=tkinter.W+tkinter.E)
 		self.button_frame.pack()
 		self.close_button.pack()
 		self.window.mainloop()
