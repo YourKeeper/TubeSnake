@@ -7,6 +7,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+import os
 import pytube
 import tkinter
 import tkinter.filedialog
@@ -71,8 +72,7 @@ class GUI:
 		try:
 			video = pytube.YouTube(link)
 			video.streams.filter(file_extension="mp4")
-			video.streams.get_highest_resolution()
-			video.streams.download(output_path=save_loc)
+			video.streams.get_highest_resolution().download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Video downloaded and saved to {save_loc}!")
 		except Exception as error:
@@ -88,8 +88,7 @@ class GUI:
 		try:
 			playlist = pytube.Playlist(link)
 			for video in playlist.videos:
-				video.streams.get_highest_resolution()
-				video.streams.download(output_path=save_loc)
+				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Playlist's contents were downloaded and saved to {save_loc}!")
 		except Exception as error:
@@ -105,8 +104,10 @@ class GUI:
 		try:
 			video = pytube.YouTube(link)
 			video.streams.filter(only_audio=True)
-			video.streams.get_highest_resolution()
-			video.streams.download(output_path=save_loc)
+			vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
+			basefile, ext = os.path.splitext(vidfile)
+			newname = basefile + '.mp3'
+			os.rename(vidfile, newname)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Video downloaded and saved to {save_loc}!")
 		except Exception as error:
@@ -122,8 +123,12 @@ class GUI:
 		try:
 			playlist = pytube.Playlist(link)
 			for video in playlist.videos:
+				video = pytube.YouTube(link)
 				video.streams.filter(only_audio=True)
-				video.streams.get_highest_resolution().download(output_path=save_loc)
+				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
+				basefile, ext = os.path.splitext(vidfile)
+				newname = basefile + '.mp3'
+				os.rename(vidfile, newname)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Playlist's contents were downloaded and saved to {save_loc}!")
 		except Exception as error:
