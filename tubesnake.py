@@ -7,10 +7,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
+from constants import Links, Video
 import os
 import pytube
 import tkinter
 import tkinter.filedialog
+
+# Defining Constants
+LINKS = Links()
+VIDEO = Video()
 
 class GUI:
 	def __init__(self):
@@ -80,27 +85,23 @@ class GUI:
 		tkinter.messagebox.showwarning(title="Warning!", message=warning_msg)
 
 	def quality_check(self):
-		quality = ""
 		match self.select_quality:
 			case 1:
-				quality = "360p"
+				return VIDEO.QUALITY_360P
 			case 2:
-				quality = "480p"
+				return VIDEO.QUALITY_480P
 			case 3:
-				quality = "720p"
+				return VIDEO.QUALITY_720P
 			case 4:
-				quality = "1080p"
-		return quality
+				return VIDEO.QUALITY_1080P
 
 	def download_mp4(self):
-		video_ID = self.entry.get()
-		link = f"https://www.youtube.com/watch?v={video_ID}"
 		self.throw_warning()
 		self.status_label.configure(text="Downloading, please wait...")
 		save_loc = tkinter.filedialog.askdirectory()
 
 		try:
-			video = pytube.YouTube(link)
+			video = pytube.YouTube(f"{LINKS.VIDEO_URL}{self.entry.get()}")
 			video.streams.filter(file_extension="mp4", res=self.quality_check())
 			video.streams.get_highest_resolution().download(output_path=save_loc)
 			self.status_label.configure(text=" ")
@@ -109,14 +110,12 @@ class GUI:
 			self.throw_error(error)
 
 	def download_playlist_mp4(self):
-		playlist_ID = self.entry.get()
-		link = f"https://www.youtube.com/playlist?list={playlist_ID}"
 		self.throw_warning()
 		self.status_label.configure(text="Downloading, please wait...")
 		save_loc = tkinter.filedialog.askdirectory()
 
 		try:
-			playlist = pytube.Playlist(link)
+			playlist = pytube.Playlist(f"{LINKS.PLAYLIST_URL}{self.entry.get()}")
 			for video in playlist.videos:
 				video.streams.filter(file_extension="mp4", res=self.quality_check())
 				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
@@ -126,14 +125,12 @@ class GUI:
 			self.throw_error(error)
 
 	def download_mp3(self):
-		video_ID = self.entry.get()
-		link = f"https://www.youtube.com/watch?v={video_ID}"
 		self.throw_warning()
 		self.status_label.configure(text="Downloading, please wait...")
 		save_loc = tkinter.filedialog.askdirectory()
 
 		try:
-			video = pytube.YouTube(link)
+			video = pytube.YouTube(f"{LINKS.VIDEO_URL}{self.entry.get()}")
 			video.streams.filter(only_audio=True, res=self.quality_check())
 			vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
 			basefile, ext = os.path.splitext(vidfile)
@@ -145,14 +142,12 @@ class GUI:
 			self.throw_error(error)
 
 	def download_playlist_mp3(self):
-		playlist_ID = self.entry.get()
-		link = f"https://www.youtube.com/playlist?list={playlist_ID}"
 		self.throw_warning()
 		self.status_label.configure(text="Downloading, please wait...")
 		save_loc = tkinter.filedialog.askdirectory()
 
 		try:
-			playlist = pytube.Playlist(link)
+			playlist = pytube.Playlist(f"{LINKS.PLAYLIST_URL}{self.entry.get()}")
 			for video in playlist.videos:
 				video.streams.filter(only_audio=True, res=self.quality_check())
 				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
