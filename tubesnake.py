@@ -136,7 +136,7 @@ class GUI:
 
 		try:
 			channel = pytube.Channel(f"{LINKS.CHANNEL_URL}{self.entry.get()}")
-			for video in playlist.videos:
+			for video in channel.videos:
 				video.streams.filter(file_extension="mp4", res=self.quality_check())
 				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
 			self.status_label.configure(text=" ")
@@ -186,7 +186,7 @@ class GUI:
 
 		try:
 			channel = pytube.Channel(f"{LINKS.CHANNEL_URL}{self.entry.get()}")
-			for video in playlist.videos:
+			for video in channel.videos:
 				video.streams.filter(only_audio=True, res=self.quality_check())
 				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
 				basefile, ext = os.path.splitext(vidfile)
