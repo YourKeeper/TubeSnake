@@ -49,10 +49,13 @@ class GUI:
 		self.button_frame = tkinter.Frame(self.window)
 		self.button_frame.columnconfigure(0, weight=1)
 		self.button_frame.columnconfigure(1, weight=1)
+		self.button_frame.columnconfigure(2, weight=1)
 		self.download_mp4_button = tkinter.Button(self.button_frame, text="MP4", width=10, height=1, bg="white", fg="black", command=self.download_mp4)
 		self.download_mp3_button = tkinter.Button(self.button_frame, text="MP3", width=10, height=1, bg="white", fg="black", command=self.download_mp3)
 		self.download_playlist_mp4_button = tkinter.Button(self.button_frame, text="MP4 (Playlist)", width=10, height=1, bg="white", fg="black", command=self.download_playlist_mp4)
 		self.download_playlist_mp3_button = tkinter.Button(self.button_frame, text="MP3 (Playlist)", width=10, height=1, bg="white", fg="black", command=self.download_playlist_mp3)
+		self.download_channel_mp4_button = tkinter.Button(self.button_frame, text="MP4 (Channel)", width=10, height=1, bg="white", fg="black", command=self.download_channel_mp4)
+		self.download_channel_mp3_button = tkinter.Button(self.button_frame, text="MP3 (Channel)", width=10, height=1, bg="white", fg="black", command=self.download_channel_mp3)
 		self.close_button = tkinter.Button(self.window, text="Exit", width=10, height=1, bg="white", fg="black", command=self.window.destroy)
 
 		# Pack it up
@@ -68,8 +71,10 @@ class GUI:
 		self.toggle_frame.pack()
 		self.download_mp4_button.grid(row=0, column=0, sticky=tkinter.W+tkinter.E)
 		self.download_playlist_mp4_button.grid(row=0, column=1, sticky=tkinter.W+tkinter.E)
+		self.download_channel_mp4_button.grid(row=0, column=2, sticky=tkinter.W+tkinter.E)
 		self.download_mp3_button.grid(row=1, column=0, sticky=tkinter.W+tkinter.E)
 		self.download_playlist_mp3_button.grid(row=1, column=1, sticky=tkinter.W+tkinter.E)
+		self.download_channel_mp3_button.grid(row=1, column=2, sticky=tkinter.W+tkinter.E)
 		self.button_frame.pack()
 		self.close_button.pack()
 		self.window.mainloop()
@@ -124,6 +129,21 @@ class GUI:
 		except Exception as error:
 			self.throw_error(error)
 
+	def download_channel_mp4(self):
+		self.throw_warning()
+		self.status_label.configure(text="Downloading, please wait...")
+		save_loc = tkinter.filedialog.askdirectory()
+
+		try:
+			channel = pytube.Channel(f"{LINKS.CHANNEL_URL}{self.entry.get()}")
+			for video in playlist.videos:
+				video.streams.filter(file_extension="mp4", res=self.quality_check())
+				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
+			self.status_label.configure(text=" ")
+			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Channel's contents were downloaded and saved to {save_loc}!")
+		except Exception as error:
+			self.throw_error(error)
+
 	def download_mp3(self):
 		self.throw_warning()
 		self.status_label.configure(text="Downloading, please wait...")
@@ -156,6 +176,24 @@ class GUI:
 				os.rename(vidfile, newname)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Playlist's contents were downloaded and saved to {save_loc}!")
+		except Exception as error:
+			self.throw_error(error)
+
+	def download_channel_mp3(self):
+		self.throw_warning()
+		self.status_label.configure(text="Downloading, please wait...")
+		save_loc = tkinter.filedialog.askdirectory()
+
+		try:
+			channel = pytube.Channel(f"{LINKS.CHANNEL_URL}{self.entry.get()}")
+			for video in playlist.videos:
+				video.streams.filter(only_audio=True, res=self.quality_check())
+				vidfile = video.streams.get_highest_resolution().download(output_path=save_loc)
+				basefile, ext = os.path.splitext(vidfile)
+				newname = basefile + '.mp3'
+				os.rename(vidfile, newname)
+			self.status_label.configure(text=" ")
+			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Channel's contents were downloaded and saved to {save_loc}!")
 		except Exception as error:
 			self.throw_error(error)
 
