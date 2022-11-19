@@ -8,7 +8,7 @@
 
 ## HOW TO USE
 
-<p>Setup is a breeze in TubeSnake, it's all done within your Command Prompt or Terminal with either <code>pip install -r requirements.txt</code> on Unix-based OSes or <code>python -m pip install -r requirements.txt</code> in Windows. Unix users will also need to ensure they've installed the Python Tkinter library within their respective package manager. TubeSnake is very straight forward in its usage, first you take the URL of the YouTube video you wish to download and copy the Video ID from the URL.</p>
+<p>Setup is a breeze in TubeSnake, it's all done with the simple Installer script provided, just select whether you're on Windows or a Unix OS and the Installer will do the work for you! Unix users will also need to ensure they've installed the Python Tkinter library within their respective package manager. TubeSnake is very straight forward in its usage, first you take the URL of the YouTube video you wish to download and copy the Video ID from the URL.</p>
 
 ***Example:***
 <p>https://www.youtube.com/watch?v=Gn-twrhKl-0 is the video we wish to download, so we take the string after the v= and copy-paste it into TubeSnake as such:</p>
