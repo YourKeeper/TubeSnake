@@ -11,6 +11,7 @@ class Links:
     def __init__(self):
         self.VIDEO_URL = "https://www.youtube.com/watch?v="
         self.PLAYLIST_URL = "https://www.youtube.com/playlist?list="
+        self.CHANNEL_URL = "https://www.youtube.com/channel/"
 
 class Video:
     def __init__(self):
