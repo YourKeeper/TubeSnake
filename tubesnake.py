@@ -123,7 +123,7 @@ class GUI:
 			playlist = pytube.Playlist(f"{LINKS.PLAYLIST_URL}{self.entry.get()}")
 			for video in playlist.videos:
 				video.streams.filter(file_extension="mp4", res=self.quality_check())
-				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
+				video.streams.get_highest_resolution().download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Playlist's contents were downloaded and saved to {save_loc}!")
 		except Exception as error:
@@ -138,7 +138,7 @@ class GUI:
 			channel = pytube.Channel(f"{LINKS.CHANNEL_URL}{self.entry.get()}")
 			for video in channel.videos:
 				video.streams.filter(file_extension="mp4", res=self.quality_check())
-				video.streams.get_highest_resolution().streams.download(output_path=save_loc)
+				video.streams.get_highest_resolution().download(output_path=save_loc)
 			self.status_label.configure(text=" ")
 			tkinter.messagebox.showwarning(title="Download Completed!", message=f"Channel's contents were downloaded and saved to {save_loc}!")
 		except Exception as error:
